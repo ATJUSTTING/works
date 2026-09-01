@@ -1,0 +1,265 @@
+/* ===== 基础重置 ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0f1115;
+  --bg-soft: #242935; /* 悬停衬底（增亮版） */
+  --text: #e8eaf0;
+  --text-dim: #9aa0ad;
+  --accent: #5b8cff;
+  --max-width: 1280px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "HarmonyOS Sans", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== 数据错误提示（works.json 解析失败时显示） ===== */
+.data-error {
+  padding: 48px 24px;
+  text-align: center;
+  color: #ff8a8a;
+  background: rgba(255, 120, 120, 0.08);
+  border: 1px solid rgba(255, 120, 120, 0.25);
+  line-height: 1.9;
+}
+
+/* ===== 顶部导航 ===== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  background: rgba(15, 17, 21, 0.75);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--accent);
+}
+
+/* ===== 主内容 ===== */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ===== 作品纵向列表 ===== */
+.works-list {
+  display: flex;
+  flex-direction: column; /* 卡片纵向排列 */
+  gap: 56px;
+  padding: 56px 0 88px;
+}
+
+/* ===== 作品卡片：无衬底，视频左 / 文字右，奇偶交替 ===== */
+.work-card {
+  display: flex;
+  align-items: stretch;
+  gap: 32px;
+  padding: 20px; /* 常驻内边距，避免悬停时内容跳动 */
+  border-radius: 0; /* 直角衬底 */
+  background: transparent;
+  height: clamp(360px, 42vw, 500px); /* 固定卡片高度，不随文本增长 */
+  transition: background 0.35s ease,
+              transform 0.35s ease,
+              box-shadow 0.35s ease;
+}
+
+/* 悬停：衬底淡入 + 整卡微微上浮 */
+.work-card:hover {
+  background: var(--bg-soft);
+  transform: translateY(-6px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+/* 偶数卡片（第 2、4…张）：左右交换，视频在右 */
+.work-card.reverse {
+  flex-direction: row-reverse;
+}
+
+.work-video {
+  flex: 2; /* 视频窗口再次放大 */
+  min-width: 0;
+  min-height: 0; /* 允许在固定高度卡片内正确收缩 */
+}
+
+.work-video video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover; /* 高度固定后由裁切保证画面不变形 */
+  border-radius: 0; /* 直角 */
+  background: #000;
+}
+
+.work-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* 介绍内容居顶 */
+  min-width: 0;
+  min-height: 0;
+  padding: 8px 0;
+  overflow: hidden;
+}
+
+.work-info h3 {
+  flex-shrink: 0; /* 名称不参与压缩，始终完整显示 */
+  font-size: 28px;      /* 名称加大 */
+  font-weight: 800;     /* 名称加粗 */
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+  color: #ffffff;       /* 纯白 */
+}
+
+/* 简介过长时内部滚动显示 */
+.work-info p {
+  flex: 1;
+  min-height: 0; /* flex 子项允许收缩出滚动条的关键 */
+  overflow-y: auto;
+  font-size: 15px;
+  color: #ffffff;       /* 纯白 */
+  line-height: 1.8;
+  padding-right: 10px;  /* 给滚动条留位，避免文字贴边 */
+  scrollbar-width: thin;         /* Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+/* 简介 \b…\b 标记的加粗文字 */
+.work-info p strong {
+  font-weight: 700;
+}
+
+/* 简介滚动条：细样式，贴合暗色主题 */
+.work-info p::-webkit-scrollbar {
+  width: 6px;
+}
+
+.work-info p::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.work-info p::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+}
+
+.work-info p::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== 滑入浮现动画：内容向视频方向汇拢 ===== */
+/* 默认卡片（视频在左）：视频从左侧滑入，文字从右侧滑向视频 */
+.work-card .work-video {
+  opacity: 0;
+  transform: translateX(-72px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.work-card .work-info {
+  opacity: 0;
+  transform: translateX(72px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+}
+
+/* 交换卡片（视频在右）：视频从右侧滑入，文字从左侧滑向视频 */
+.work-card.reverse .work-video {
+  transform: translateX(72px);
+}
+
+.work-card.reverse .work-info {
+  transform: translateX(-72px);
+}
+
+/* 进入视口后归位浮现 */
+.work-card.in-view .work-video,
+.work-card.in-view .work-info {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* 无障碍：用户偏好减少动效时关闭滑动 */
+@media (prefers-reduced-motion: reduce) {
+  .work-card {
+    transition: none;
+  }
+
+  .work-card .work-video,
+  .work-card .work-info {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ===== 移动端：卡片内部改上下堆叠 ===== */
+@media (max-width: 768px) {
+  .work-card,
+  .work-card.reverse {
+    flex-direction: column;
+    gap: 20px;
+    height: auto; /* 上下堆叠时不固定高度 */
+  }
+
+  .work-card .work-video,
+  .work-card.reverse .work-video,
+  .work-card .work-info,
+  .work-card.reverse .work-info {
+    transform: translateY(40px);
+  }
+
+  .work-card.in-view .work-video,
+  .work-card.in-view .work-info {
+    transform: translateY(0);
+  }
+
+  .work-video video {
+    aspect-ratio: 16 / 9; /* 窄屏恢复按比例显示 */
+    height: auto;
+  }
+
+  .work-info h3 {
+    font-size: 22px;
+  }
+
+  /* 移动端简介限高滚动 */
+  .work-info p {
+    flex: none;
+    max-height: 240px;
+  }
+}
+
+/* ===== 页脚 ===== */
+.site-footer {
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-dim);
+  font-size: 13px;
+}

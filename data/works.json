@@ -1,0 +1,22 @@
+[
+  {
+    "video": "assets/videos/RunWorkDemo.mp4",
+    "name": "AI agent开发较为完整的游戏demo",
+    "description": "<B>架构设计</B>：采用事件驱动架构（EventManager 集中式观察者模式，支持多参数事件）解耦各系统，配合懒加载单例管理器（GameManager / ConfigManager / SoundManager / VFXManager / QuestManager）统筹场景流程、状态切换与数据配置；怪物与特效统一走对象池管理——MonsterPoolManager 监听击杀事件自动回收复用怪物实例，Prefab 经 Addressables 异步加载，有效降低运行时实例化开销。\n<b>核心玩法</b>：玩家基于 CharacterController 实现行走/奔跑/跳跃与远程射击；怪物采用抽象基类 + 多态设计（飞行怪 / 站桩怪），内置出生、受伤、死亡生命周期钩子与配置化概率掉落表，可掉落回血、攻击增益等道具；共 3 个关卡场景 + 终点通关触发，配套关卡选择与解锁流程。\n<b>任务系统</b>：QuestManager 通过监听游戏事件（击杀怪物 / 拾取道具）自动推进任务进度，支持多目标组合、任务状态机（锁定 / 进行中 / 完成）与奖励发放（道具 / 攻击加成 / 血量）。\n<b>存档功能</b>：将关卡解锁与通关状态统一序列化为 JSON（JsonUtility），持久化至 StreamingAssets/Levels.json，启动时反序列化恢复关卡进度，实现跨会话数据保持。"
+  },
+{
+    "video": "assets/videos/21point.mp4",
+    "name": "unity复刻《生化危机7》dlc《21点》",
+    "description": "<b>场景与模型</b>：使用Blender制作精简几何体模型搭建对战桌面与卡牌场景，常用数字牌（1–11）模型预置在场景卡池中按索引直接调用；道具牌采用单预制体方案——运行时通过 Addressables 异步加载 powerCard 预制体并以对象池复用，仅运行时替换 _BaseColorMap 贴图即可呈现 15 种不同道具牌效果，显著降低 Draw Call 与内存开销。基于 Shader Graph 制作自定义着色器实现卡牌做旧/脏污视觉特效。\n<b>游戏系统设计</b>：采用单例管理器（Singleton）模式实现各系统低耦合独立运行——GameManager 统筹发牌、回合切换、点数计算与胜负判定；AudioManager 负责音效统一调度播放；BagPanel 以 4×5 网格 UI + Dictionary<PCTpye, int> 管理双方道具牌库存；LightsManager 通过 DOTween 控制灯光强度渐变以指示当前回合归属方；MoneySystem 管理赌注经济与奖惩结算。各管理器职责单一、互不耦合。\n<b>对手 AI 开发</b>：基于概率推演与期望值评估构建博弈 AI 决策系统（核心约 600 行）。AI 实时读取全场状态（双方手牌含暗牌、HP、道具池、剩余牌组），计算安全抽牌率并按自身血量动态调节激进/保守阈值（0.65→0.35）；通过前瞻推演估算对手抽牌概率与反超威胁比例，对停牌胜率做折损修正。核心决策采用\"停牌期望 vs 抽牌期望\"加权比较择优；道具牌选择采用 9 级优先级决策树（爆牌自救 → 确定性抽牌 → perfect 最优抽取 → withdraw 连招 → swap 交换 → 对手削弱 → 攻防净伤害 → 提限扩边际 → 资源补充），并预判对手防御/攻击潜力做净收益计算，实现近人类博弈水平的对手 AI。"
+},
+{
+    "video": "assets/videos/dark.mp4",
+    "name": "unity搭建完整解密游戏系统demo",
+    "description": "<b>架构设计</b>：基于泛型委托字典构建集中式事件总线（EventManager+GameEvent枚举，支持泛型参数多播），配合单例管理器矩阵（GameManager/TaskManager/AudioManager/EffectManager/UIManager等）解耦各系统；UI层采用BasePanel/BasePanel继承体系+面板池管理（菜单/暂停/准星界面及各类确认弹窗），交互提示、任务面板均通过事件订阅驱动刷新。\t<b>核心玩法</b>：玩家基于CharacterController实现第一人称移动/视角控制，配套自研事件驱动角色状态机（CharacterStateMachine，含待机/奔跑/下蹲/坠落/死亡等状态，OnStateEnter/Exit/Update钩子驱动动画）；道具交互系统（钥匙/信箱/门等解谜道具）+ 视线检测提示（SightPanel）；ESC暂停（timeScale=0）与主菜单/继续游戏流程完整。\t<b>任务系统</b>：BaseTask抽象基类+CollectTask/TriggerTask多态子类，TaskManager内置工厂按配置数据（TaskData）实例化任务，监听道具拾取事件自动推进进度，任务完成自动链式触发下一任务（id+1），支持多任务并行列表管理。\t<b>存档功能</b>：将玩家位置、朝向、任务进度统一收敛至SaveData类，JsonUtility序列化为save.json持久化，读取时反序列化恢复场景状态与任务链进度；已完成Windows平台打包发布。"
+},
+{
+    "video": "assets/videos/Museum.mp4",
+    "name": "博物馆场景建模搭建",
+    "description": "<b>建模实现</b>：独立完成博物馆全场景（含展柜、文物等资产）建模，采用 Blender进行拓扑优化与UV合理展开，文物模型采用照片建模和ai建模来保证还原度，确保模型面数控制在5k–20k范围内以适配实时渲染。\n<b>PBR贴图<\b>：基于Substance Painter实现95%以上资产的PBR材质流程，涵盖Albedo、Roughness、 Metallic、Normal四通道贴图，提升物理光照响应真实感 \n<b>Shader开发<\b>：使用Unity Shader Graph制作贴花，制作可编辑的墙上文字，利用ai编写一些shader来实现的花屏故障效果。\n<b>光照优化<\b>：在Unity中搭建HDRI环境光+区域灯组合布光体系，完成Lightmapping烘焙，生成4096×4096光 照贴图集。"
+  }
+]
