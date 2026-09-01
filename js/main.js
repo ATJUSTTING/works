@@ -3,7 +3,7 @@
 // 奇数卡片视频在左，偶数卡片视频在右（左右交替）
 // 卡片进入视口时：内容向视频方向滑入浮现，视频自动播放；离开视口时暂停
 
-const WORKS_JSON_PATH = "../data/works.json";
+const WORKS_JSON_PATH = "data/works.json";
 
 async function loadWorks() {
   try {
