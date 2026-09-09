@@ -17,6 +17,6 @@
 {
     "video": "assets/videos/Museum.mp4",
     "name": "博物馆场景建模搭建",
-    "description": "<b>建模实现</b>：独立完成博物馆全场景（含展柜、文物等资产）建模，采用 Blender进行拓扑优化与UV合理展开，文物模型采用照片建模和ai建模来保证还原度，确保模型面数控制在5k–20k范围内以适配实时渲染。\n<b>PBR贴图<\b>：基于Substance Painter实现95%以上资产的PBR材质流程，涵盖Albedo、Roughness、 Metallic、Normal四通道贴图，提升物理光照响应真实感 \n<b>Shader开发<\b>：使用Unity Shader Graph制作贴花，制作可编辑的墙上文字，利用ai编写一些shader来实现的花屏故障效果。\n<b>光照优化<\b>：在Unity中搭建HDRI环境光+区域灯组合布光体系，完成Lightmapping烘焙，生成4096×4096光 照贴图集。"
+    "description": "<b>建模实现</b>：独立完成博物馆全场景（含展柜、文物等资产）建模，采用 Blender进行拓扑优化与UV合理展开，文物模型采用照片建模和ai建模来保证还原度，确保模型面数控制在5k–20k范围内以适配实时渲染。\n<b>PBR贴图</b>：基于Substance Painter实现95%以上资产的PBR材质流程，涵盖Albedo、Roughness、 Metallic、Normal四通道贴图，提升物理光照响应真实感 \n<b>Shader开发</b>：使用Unity Shader Graph制作贴花，制作可编辑的墙上文字，利用ai编写一些shader来实现的花屏故障效果。\n<b>光照优化</b>：在Unity中搭建HDRI环境光+区域灯组合布光体系，完成Lightmapping烘焙，生成4096×4096光 照贴图集。"
   }
 ]
