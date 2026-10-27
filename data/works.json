@@ -1,7 +1,12 @@
 [
   {
+    "video": "assets/videos/WangNian.mp4",
+    "name": "基于unity的RPG游戏demo",
+    "description": "(2026.9 - 制作中)\n<b>技术栈与架构</b>：采用单例管理器层分层治理，核心通信基于强类型事件总线（BaseEvent子类负载+GameEvent枚举）实现模块解耦；数据与逻辑分离——大多数据以ScriptableObject配置，配合Addressables异步加载资源，DOTween驱动UI动画。\n<b>容器与背包系统</b>：设计Container抽象基类统一持有槽位数据与增删查改接口，派生出Backpack（18格6×3网格）与Gear（装备栏）两类容器；运行时数据以ItemSlot承载（Item模板+数量+耐久，-1表示该属性不存在）。物品入包采用 查重堆叠→溢出拆分→填充空位 两阶段算法，支持同类道具自动合并与超上限时的余量二次分配。实现跨容器拖拽交互：DragManager暂存拖拽项的数据与索引，释放时以射线检测目标UI并写回后端容器，全程只交换数据不搬运对象，保证UI与数据层索引一致性。\n<b>Buff系统</b>：采用静态配置(BuffData)-运行实例(BuffInstance)-全局管理(BuffManager)三层结构。BuffData支持单Buff挂载多条不同属性的效果组合；BuffManager以类型为键做去重，重复触发转为时长刷新而非效果叠加。效果按性质分双通道结算——一次性加减型（开始和结束时产生作用）施加与失效时对属性值做对称增减，主动收尾避免属性漂移；持续作用型（存在时产生作用）按Time.deltaTime逐帧结算。所有UI图标刷新通过事件被动驱动，管理器本身零UI引用。\n<b>输入系统</b>：构建 InputManager 统一输入入口，采用计数式分层锁（attack/tab/ui/game）而非布尔开关，多层UI叠加打开时逐层加解锁、计数归零才真正放行，规避了内层界面关闭导致外层操作提前失效的缺陷。原始按键经锁校验后转换为语义事件（交互/攻击/打开背包）广播，由相应业务模块订阅消费，按键定义与业务逻辑完全解耦。\n<b>辅助工具</b>：内置调试修改器场景（F9 叠加加载），可实时调整三维属性、按类型下发任意物品与Buff并支持一键清空状态，提升开发期迭代验证效率。"
+  },
+  {
     "video": "assets/videos/21point.mp4",
-    "name": "unity复刻《生化危机7》dlc《21点》",
+    "name": "基于unity复刻《生化危机7》dlc《21点》",
     "description": "(2026.6 - 2026.7)\n<b>场景与模型</b>：使用Blender制作精简几何体模型搭建对战桌面与卡牌场景，常用数字牌（1–11）模型预置在场景卡池中按索引直接调用；道具牌采用单预制体方案——运行时通过 Addressables 异步加载 powerCard 预制体并以对象池复用，仅运行时替换 _BaseColorMap 贴图即可呈现 15 种不同道具牌效果\n<b>游戏系统设计</b>：采用单例管理器（Singleton）模式实现各系统低耦合独立运行——GameManager 统筹发牌、回合切换、点数计算与胜负判定；AudioManager 负责音效统一调度播放；BagPanel 以 4×5 网格 UI + Dictionary<PCTpye, int> 管理双方道具牌库存；LightsManager 通过 DOTween 控制灯光强度渐变以指示当前回合归属方；MoneySystem 管理赌注经济与奖惩结算。各管理器职责单一、互不耦合。\n<b>对手 AI 开发（该部分使用了ai辅助开发）</b>：基于概率推演与期望值评估构建博弈 AI 决策系统（核心约 600 行）。AI 实时读取全场状态（双方手牌含暗牌、HP、道具池、剩余牌组），计算安全抽牌率并按自身血量动态调节激进/保守阈值（0.65→0.35）；通过前瞻推演估算对手抽牌概率与反超威胁比例，对停牌胜率做折损修正。核心决策采用\"停牌期望 vs 抽牌期望\"加权比较择优；道具牌选择采用 9 级优先级决策树（爆牌自救 → 确定性抽牌 → perfect 最优抽取 → withdraw 连招 → swap 交换 → 对手削弱 → 攻防净伤害 → 提限扩边际 → 资源补充），并预判对手防御/攻击潜力做净收益计算，实现近人类博弈水平的对手 AI。"
   },
   {
@@ -11,15 +16,15 @@
   },
 {
     "video": "assets/videos/dark.mp4",
-    "name": "unity搭建解密游戏小demo",
-    "description": "(2026.4 - 2026.5)\n<b>架构设计</b>：基于泛型委托字典构建集中式事件总线（EventManager+GameEvent枚举，支持泛型参数多播），配合单例管理器矩阵（GameManager/TaskManager/AudioManager/EffectManager/UIManager等）解耦各系统；UI层采用BasePanel/BasePanel继承体系+面板池管理（菜单/暂停/准星界面及各类确认弹窗），交互提示、任务面板均通过事件订阅驱动刷新。\t<b>核心玩法</b>：玩家基于CharacterController实现第一人称移动/视角控制，配套自研事件驱动角色状态机（CharacterStateMachine，含待机/奔跑/下蹲/坠落/死亡等状态，OnStateEnter/Exit/Update钩子驱动动画）；道具交互系统（钥匙/信箱/门等解谜道具）+ 视线检测提示（SightPanel）；ESC暂停（timeScale=0）与主菜单/继续游戏流程完整。\t<b>任务系统</b>：BaseTask抽象基类+CollectTask/TriggerTask多态子类，TaskManager内置工厂按配置数据（TaskData）实例化任务，监听道具拾取事件自动推进进度，任务完成自动链式触发下一任务（id+1），支持多任务并行列表管理。\t<b>存档功能</b>：将玩家位置、朝向、任务进度统一收敛至SaveData类，JsonUtility序列化为save.json持久化，读取时反序列化恢复场景状态与任务链进度；已完成Windows平台打包发布。"
+    "name": "基于unity搭建的解密游戏小demo",
+    "description": "(2026.4 - 2026.5)\n<b>架构设计</b>：基于泛型委托字典构建集中式事件总线（EventManager+GameEvent枚举，支持泛型参数多播），配合单例管理器矩阵（GameManager/TaskManager/AudioManager/EffectManager/UIManager等）解耦各系统；UI层采用BasePanel/BasePanel继承体系+面板池管理（菜单/暂停/准星界面及各类确认弹窗），交互提示、任务面板均通过事件订阅驱动刷新。\n<b>核心玩法</b>：玩家基于CharacterController实现第一人称移动/视角控制，配套自研事件驱动角色状态机（CharacterStateMachine，含待机/奔跑/下蹲/坠落/死亡等状态，OnStateEnter/Exit/Update钩子驱动动画）；道具交互系统（钥匙/信箱/门等解谜道具）+ 视线检测提示（SightPanel）；ESC暂停（timeScale=0）与主菜单/继续游戏流程完整。\t<b>任务系统</b>：BaseTask抽象基类+CollectTask/TriggerTask多态子类，TaskManager内置工厂按配置数据（TaskData）实例化任务，监听道具拾取事件自动推进进度，任务完成自动链式触发下一任务（id+1），支持多任务并行列表管理。\t<b>存档功能</b>：将玩家位置、朝向、任务进度统一收敛至SaveData类，JsonUtility序列化为save.json持久化，读取时反序列化恢复场景状态与任务链进度；已完成Windows平台打包发布。"
 },
 {
     "video": "assets/videos/Museum.mp4",
     "name": "博物馆场景建模搭建",
     "description": "(2026.5 - 2026.6)\n<b>建模实现</b>：独立完成博物馆全场景（含展柜、文物等资产）建模，采用 Blender进行拓扑优化与UV合理展开，文物模型采用照片建模和ai建模来保证还原度，确保模型面数控制在5k–20k范围内以适配实时渲染。\n<b>PBR贴图</b>：基于Substance Painter实现95%以上资产的PBR材质流程，涵盖Albedo、Roughness、 Metallic、Normal四通道贴图，提升物理光照响应真实感 \n<b>Shader开发</b>：使用Unity Shader Graph制作贴花，制作可编辑的墙上文字，利用ai编写一些shader来实现的花屏故障效果。\n<b>光照优化</b>：在Unity中搭建HDRI环境光+区域灯组合布光体系，完成Lightmapping烘焙，生成4096×4096光 照贴图集。"
   },
-{
+  {
     "video": "assets/videos/CNChess.mp4",
     "name": "EasyX纯c++编写中国象棋",
     "description": "(2024.9 - 2024.11)\n<b>项目概述</b>：基于 C++ 与 EasyX 图形库开发的中国象棋人机对战程序。棋盘采用 9×10 整数矩阵表示（正值红方、负值黑方，类型编码区分 7 种棋子），初始布局坐标由外部文件（坐标.txt）加载，实现数据与逻辑分离；支持人机/双人对战模式切换及执红/执黑选择（黑方视角自动翻转棋盘绘制）。\n<b>规则引擎</b>：完整实现全部 7 类棋子走法生成，包括中国象棋特有的规则细节——将帅照面（飞将）、蹩马腿、塞象眼、炮隔子打、兵过河横移；每步走子前实时计算合法着法列表（Chequer 类内置 point 数组缓存可行点），选子后可视化显示所有可达位置。胜负判定覆盖两种终局：将帅被擒与困毙（一方无任何合法着法）。\n<b>AI 对战算法</b>：自实现显式搜索树（蒙洛卡特生成树）上的极小极大搜索——奇数层取最大值（AI 方）、偶数层取最小值（对手方）模拟双方博弈；评估函数以子力价值表为基础，吃子即时加分，擒获将帅记 ±100 并截断该分支递归。搜索深度随局面动态调整：开局 4 层，存量棋子 ≤13 时加深至 5 层、≤10 时至 6 层，平衡思考时间与棋力。走法以“棋子类型+目标坐标”编码回传，树节点采用 new/delete 显式内存管理，每层评估后即时释放。\n<b>界面与交互</b>：EasyX 双缓冲批量绘制（BeginBatchDraw/FlushBatchDraw）避免画面闪烁；素材含全套红黑棋子、棋盘背景、选中圈/落点圈/行走轨迹贴图与落子音效；菜单、对局、结算全部基于鼠标消息（ExMessage）驱动，控制台同步输出回合数、存量棋子数与 AI 评分用于调试。"
